@@ -1,0 +1,30 @@
+# Android 11 stock partition layout for OPPO A53 5G (PCEM30).
+system /system ext4 ro wait,logical,first_stage_mount
+system_ext /system_ext ext4 ro wait,logical,first_stage_mount,nofail
+vendor /vendor ext4 ro wait,logical,first_stage_mount
+product /product ext4 ro wait,logical,first_stage_mount
+my_odm /odm ext4 ro wait,logical,first_stage_mount,nofail
+my_product /my_product ext4 ro wait,logical,first_stage_mount,nofail
+my_engineering /my_engineering ext4 ro wait,logical,first_stage_mount,nofail
+my_company /my_company ext4 ro wait,logical,first_stage_mount,nofail
+my_carrier /my_carrier ext4 ro wait,logical,first_stage_mount,nofail
+my_region /my_region ext4 ro wait,logical,first_stage_mount,nofail
+my_heytap /my_heytap ext4 ro wait,logical,first_stage_mount,nofail
+my_stock /my_stock ext4 ro wait,logical,first_stage_mount,nofail
+my_preload /my_preload ext4 ro wait,logical,first_stage_mount,nofail
+
+/dev/block/by-name/md_udc /metadata ext4 noatime,nosuid,nodev,discard wait,formattable,first_stage_mount
+/dev/block/by-name/cache /cache ext4 noatime,nosuid,nodev,noauto_da_alloc,discard wait,check,formattable,first_stage_mount
+/dev/block/by-name/userdata /data f2fs noatime,nosuid,nodev,discard,noflush_merge,fsync_mode=nobarrier,reserve_root=134217,resgid=1065,inlinecrypt wait,check,formattable,quota,latemount,resize,reservedsize=128m,checkpoint=fs,fileencryption=aes-256-xts:aes-256-cts:v1
+
+/devices/platform/externdevice* auto auto defaults voldmanaged=external_sd:auto
+/devices/platform/11200000.usb_xhci* auto vfat defaults voldmanaged=usb_otg:auto
+
+/dev/block/by-name/boot /boot emmc defaults defaults
+/dev/block/by-name/recovery /recovery emmc defaults defaults
+/dev/block/by-name/misc /misc emmc defaults defaults
+/dev/block/by-name/vbmeta /vbmeta emmc defaults defaults
+/dev/block/by-name/vbmeta_system /vbmeta_system emmc defaults defaults
+/dev/block/by-name/vbmeta_vendor /vbmeta_vendor emmc defaults defaults
+/dev/block/by-name/dtbo /dtbo emmc defaults defaults
+/dev/block/by-name/odmdtbo /odmdtbo emmc defaults defaults

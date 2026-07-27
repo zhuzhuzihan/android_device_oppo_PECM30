@@ -1,0 +1,126 @@
+name: Build OrangeFox
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: orangefox-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DEVICE: PCEM30
+  DEVICE_PATH: device/oppo/PCEM30
+  FOX_BRANCH: "12.1"
+  FOX_SYNC_COMMIT: 11e4406b2bd1de939a26b6bfbad7e371cc3b1fa7
+  FOX_SCRIPTS_COMMIT: 265b1a256e061d9f3ca6e6767c6aa2bce4d9cb1a
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360
+
+    steps:
+      - name: Check out device tree
+        uses: actions/checkout@v4
+        with:
+          path: device-tree
+
+      - name: Verify stock prebuilts
+        working-directory: device-tree
+        run: |
+          printf '%s  %s\n' \
+            ccd648faf70c36a526b54ef3b3e04c0558535c0861ca48b557786740d2183818 prebuilt/kernel \
+            5e4fbe00e75769c7d7fd7887e2095011b0c101e3b562c78793569e54f74a5fc0 prebuilt/dtb \
+            d6f641ccf46e0fe0392f133b6e68b42c979b3a70ca934658c9ac5588ab6fd487 prebuilt/recovery_dtbo \
+            | sha256sum --check
+
+      - name: Free runner disk space
+        run: |
+          sudo apt-get remove --purge -y '^dotnet-.*' '^llvm-.*' 'php.*' || true
+          sudo apt-get autoremove -y
+          sudo apt-get clean
+          docker image prune --all --force
+          df -h
+
+      - name: Install build environment
+        run: |
+          git clone https://gitlab.com/OrangeFox/misc/scripts.git fox-scripts
+          git -C fox-scripts checkout "${FOX_SCRIPTS_COMMIT}"
+          sudo bash fox-scripts/setup/android_build_env.sh
+
+      - name: Configure swap
+        run: |
+          sudo fallocate -l 8G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          free -h
+
+      - name: Sync OrangeFox 12.1
+        run: |
+          git clone https://gitlab.com/OrangeFox/sync.git fox-sync
+          git -C fox-sync checkout "${FOX_SYNC_COMMIT}"
+          fox-sync/orangefox_sync.sh \
+            --branch "${FOX_BRANCH}" \
+            --path "${GITHUB_WORKSPACE}/fox_${FOX_BRANCH}"
+
+      - name: Install device tree
+        run: |
+          mkdir -p "fox_${FOX_BRANCH}/device/oppo"
+          rsync -a --exclude=.git device-tree/ "fox_${FOX_BRANCH}/${DEVICE_PATH}/"
+
+      - name: Build recovery image
+        working-directory: fox_12.1
+        run: |
+          export ALLOW_MISSING_DEPENDENCIES=true
+          export FOX_BUILD_DEVICE="${DEVICE}"
+          export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
+          export FOX_BUILD_TYPE=Alpha
+          export LC_ALL=C
+          source build/envsetup.sh
+          lunch "twrp_${DEVICE}-eng"
+          mka adbd recoveryimage
+
+      - name: Validate and stage artifacts
+        run: |
+          output="fox_${FOX_BRANCH}/out/target/product/${DEVICE}/recovery.img"
+          test -f "${output}"
+          mkdir -p artifacts
+          image="artifacts/OrangeFox-${DEVICE}-${GITHUB_REF_NAME}.img"
+          cp "${output}" "${image}"
+          {
+            printf 'device_tree_commit=%s\n' "${GITHUB_SHA}"
+            printf 'orangefox_branch=%s\n' "${FOX_BRANCH}"
+            printf 'orangefox_sync_commit=%s\n' "${FOX_SYNC_COMMIT}"
+            python3 device-tree/scripts/validate_bootimg.py "${image}"
+          } | tee artifacts/build-info.txt
+          sha256sum "${image}" > "${image}.sha256"
+          if compgen -G "fox_${FOX_BRANCH}/out/target/product/${DEVICE}/OrangeFox-*.zip" > /dev/null; then
+            cp fox_${FOX_BRANCH}/out/target/product/${DEVICE}/OrangeFox-*.zip artifacts/
+          fi
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OrangeFox-PCEM30-${{ github.run_number }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+
+      - name: Create prerelease for tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: OrangeFox PCEM30 ${{ github.ref_name }}
+          prerelease: true
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/*

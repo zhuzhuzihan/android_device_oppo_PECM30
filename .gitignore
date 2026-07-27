@@ -1,0 +1,9 @@
+out/
+.repo/
+*.log
+*.tmp
+__pycache__/
+*.pyc
+boot.img
+recovery.img
+vendor.img
