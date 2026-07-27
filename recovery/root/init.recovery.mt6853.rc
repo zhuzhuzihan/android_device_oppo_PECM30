@@ -2,6 +2,7 @@ on init
     setprop sys.usb.configfs 1
     setprop sys.usb.ffs.aio_compat 1
     setprop sys.usb.config adb
+    setprop recovery.decrypt.hals_ready 0
 
     mkdir /mnt/vendor 0755 root root
     mkdir /mnt/vendor/persist 0771 root root
@@ -12,10 +13,20 @@ on fs
     write /sys/class/udc/musb-hdrc/device/cmode 2
     start adbd
 
+on property:init.svc.keystore2=running && property:recovery.decrypt.hals_ready=0
+    stop keystore2
+
 on property:hwservicemanager.ready=true
     start mobicore
-    start keymaster-4-0
-    start gatekeeper-1-0
+    start decryption-hal-starter
+
+service decryption-hal-starter /system/bin/sh -c "sleep 1; setprop ctl.start keymaster-4-0; setprop ctl.start gatekeeper-1-0; sleep 3; setprop recovery.decrypt.hals_ready 1; setprop ctl.restart keystore2"
+    class core
+    user root
+    group root
+    disabled
+    oneshot
+    seclabel u:r:recovery:s0
 
 service mobicore /system/bin/mcDriverDaemon --P1 /mnt/vendor/persist/mcRegistry
     class core
@@ -30,6 +41,7 @@ service keymaster-4-0 /system/bin/android.hardware.keymaster@4.0-service.truston
     user root
     group root drmrpc
     disabled
+    interface android.hardware.keymaster@4.0::IKeymasterDevice default
     seclabel u:r:recovery:s0
     setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/system/lib64
 
@@ -38,5 +50,6 @@ service gatekeeper-1-0 /system/bin/android.hardware.gatekeeper@1.0-service
     user root
     group root
     disabled
+    interface android.hardware.gatekeeper@1.0::IGatekeeper default
     seclabel u:r:recovery:s0
     setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/system/lib64

@@ -10,7 +10,8 @@ TARGET_SCREEN_HEIGHT := 2400
 PRODUCT_PACKAGES += \
     android.hardware.fastboot@1.0-impl-mock \
     android.hardware.fastboot@1.0-impl-mock.recovery \
-    fastbootd
+    fastbootd \
+    lshal
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/dtb:dtb.img \
