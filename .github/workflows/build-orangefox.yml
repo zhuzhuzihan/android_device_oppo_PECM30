@@ -90,6 +90,14 @@ jobs:
           ! grep -Fq 'auto serviceManager = IServiceManager::getService();' "${source_file}"
           grep -Fq 'auto serviceManager = android::hardware::defaultServiceManager1_2();' "${source_file}"
 
+      - name: Package Keystore2 service contexts in recovery
+        run: |
+          patch_file="${GITHUB_WORKSPACE}/device-tree/patches/system-sepolicy-package-service-contexts-in-recovery.patch"
+          git -C "fox_${FOX_BRANCH}/system/sepolicy" apply --check "${patch_file}"
+          git -C "fox_${FOX_BRANCH}/system/sepolicy" apply "${patch_file}"
+          source_file="fox_${FOX_BRANCH}/system/sepolicy/Android.bp"
+          test "$(grep -A3 'name: "plat_service_contexts"' "${source_file}" | grep -c 'recovery_available: true')" -eq 1
+
       - name: Build recovery image
         working-directory: fox_12.1
         run: |
@@ -107,6 +115,13 @@ jobs:
         run: |
           output="fox_${FOX_BRANCH}/out/target/product/${DEVICE}/recovery.img"
           test -f "${output}"
+          recovery_root="fox_${FOX_BRANCH}/out/target/product/${DEVICE}/recovery/root"
+          service_contexts="${recovery_root}/system/etc/selinux/plat_service_contexts"
+          grep -Fq 'android.system.keystore2.IKeystoreService/default' "${service_contexts}"
+          grep -Fq 'android.security.legacykeystore' "${service_contexts}"
+          grep -Fq 'android.security.maintenance' "${service_contexts}"
+          grep -Fq 'interface aidl android.system.keystore2.IKeystoreService/default' \
+            "${recovery_root}/system/etc/init/keystore2.rc"
           mkdir -p artifacts
           image="artifacts/OrangeFox-${DEVICE}-${GITHUB_REF_NAME}.img"
           cp "${output}" "${image}"
