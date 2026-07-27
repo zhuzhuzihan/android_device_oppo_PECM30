@@ -81,6 +81,15 @@ jobs:
           mkdir -p "fox_${FOX_BRANCH}/device/oppo"
           rsync -a --exclude=.git device-tree/ "fox_${FOX_BRANCH}/${DEVICE_PATH}/"
 
+      - name: Patch recovery Keymaster compatibility
+        run: |
+          patch_file="${GITHUB_WORKSPACE}/device-tree/patches/system-security-use-hwbinder-in-recovery.patch"
+          git -C "fox_${FOX_BRANCH}/system/security" apply --check "${patch_file}"
+          git -C "fox_${FOX_BRANCH}/system/security" apply "${patch_file}"
+          source_file="fox_${FOX_BRANCH}/system/security/keystore2/src/km_compat/km_compat.cpp"
+          ! grep -Fq 'auto serviceManager = IServiceManager::getService();' "${source_file}"
+          grep -Fq 'auto serviceManager = android::hardware::defaultServiceManager1_2();' "${source_file}"
+
       - name: Build recovery image
         working-directory: fox_12.1
         run: |
