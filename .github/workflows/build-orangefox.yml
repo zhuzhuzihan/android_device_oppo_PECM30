@@ -89,7 +89,9 @@ jobs:
           export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
           export FOX_BUILD_TYPE=Alpha
           export LC_ALL=C
+          set +e
           source build/envsetup.sh
+          set -e
           lunch "twrp_${DEVICE}-eng"
           mka adbd recoveryimage
 
