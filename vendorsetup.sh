@@ -21,6 +21,7 @@ if [ "$1" = "${FDEVICE}" ] || [ "${FOX_BUILD_DEVICE}" = "${FDEVICE}" ]; then
     # OrangeFox's documentation recommends vanilla mode for non-Xiaomi devices.
     export FOX_VANILLA_BUILD=1
     export OF_FORCE_PREBUILT_KERNEL=1
+    export OF_DEFAULT_KEYMASTER_VERSION="4.0"
     export OF_MAINTAINER="zhuzhuzihan"
     export TARGET_DEVICE_ALT="oppo6853"
     export FOX_RECOVERY_SYSTEM_PARTITION="/dev/block/mapper/system"

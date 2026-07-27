@@ -53,8 +53,12 @@ decryption all require testing on a PECM30. Do not flash a CI image without a
 verified way to restore the stock recovery.
 
 The stock recovery refers to `/dev/block/by-name/md_udc` as metadata while the
-vendor fstab refers to `/dev/block/by-name/metadata`. This tree follows stock
-recovery until the actual by-name links are captured from a device.
+vendor fstab and the device's actual mount table use
+`/dev/block/by-name/metadata`. The recovery fstab therefore uses the latter.
+
+Android 11 FBE decryption uses the stock Trustonic Keymaster 4.0, hardware
+Gatekeeper and `mcDriverDaemon` blobs. These run with the stock vendor library
+set ahead of the OrangeFox Android 12 libraries to avoid ABI collisions.
 
 ## GitHub Actions
 
