@@ -1,6 +1,5 @@
-# Android 11 stock partition layout for OPPO A53 5G (PCEM30).
+# Android 11 stock partition layout for OPPO A53 5G (PECM30).
 system /system ext4 ro wait,logical,first_stage_mount
-system_ext /system_ext ext4 ro wait,logical,first_stage_mount,nofail
 vendor /vendor ext4 ro wait,logical,first_stage_mount
 product /product ext4 ro wait,logical,first_stage_mount
 my_odm /odm ext4 ro wait,logical,first_stage_mount,nofail

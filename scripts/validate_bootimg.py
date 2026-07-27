@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the fixed properties of a PCEM30 recovery image."""
+"""Validate the fixed properties of a PECM30 recovery image."""
 
 import argparse
 import hashlib

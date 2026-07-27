@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  DEVICE: PCEM30
-  DEVICE_PATH: device/oppo/PCEM30
+  DEVICE: PECM30
+  DEVICE_PATH: device/oppo/PECM30
   FOX_BRANCH: "12.1"
   FOX_SYNC_COMMIT: 11e4406b2bd1de939a26b6bfbad7e371cc3b1fa7
   FOX_SCRIPTS_COMMIT: 265b1a256e061d9f3ca6e6767c6aa2bce4d9cb1a
@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Check out device tree
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: device-tree
 
@@ -86,7 +86,6 @@ jobs:
         run: |
           export ALLOW_MISSING_DEPENDENCIES=true
           export FOX_BUILD_DEVICE="${DEVICE}"
-          export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
           export FOX_BUILD_TYPE=Alpha
           export LC_ALL=C
           set +e
@@ -116,7 +115,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OrangeFox-PCEM30-${{ github.run_number }}
+          name: OrangeFox-PECM30-${{ github.run_number }}
           path: artifacts/
           if-no-files-found: error
           retention-days: 30
@@ -126,7 +125,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          name: OrangeFox PCEM30 ${{ github.ref_name }}
+          name: OrangeFox PECM30 ${{ github.ref_name }}
           prerelease: true
           generate_release_notes: true
           fail_on_unmatched_files: true
