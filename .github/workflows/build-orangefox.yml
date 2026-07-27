@@ -64,11 +64,15 @@ jobs:
           fi
           free -h
 
-      - name: Sync OrangeFox 12.1
+      - name: Fetch OrangeFox sync helper
         run: |
           git clone https://gitlab.com/OrangeFox/sync.git fox-sync
           git -C fox-sync checkout "${FOX_SYNC_COMMIT}"
-          fox-sync/orangefox_sync.sh \
+
+      - name: Sync OrangeFox 12.1
+        working-directory: fox-sync
+        run: |
+          ./orangefox_sync.sh \
             --branch "${FOX_BRANCH}" \
             --path "${GITHUB_WORKSPACE}/fox_${FOX_BRANCH}"
 
