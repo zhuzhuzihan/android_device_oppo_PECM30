@@ -18,6 +18,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/root/ueventd.mt6853.rc:recovery/root/ueventd.mt6853.rc \
     $(LOCAL_PATH)/recovery/root/system/etc/recovery.fstab:recovery/root/system/etc/recovery.fstab \
     $(LOCAL_PATH)/recovery/root/system/etc/twrp.flags:recovery/root/system/etc/twrp.flags \
+    $(LOCAL_PATH)/recovery/root/vendor/etc/vintf/manifest.xml:recovery/root/vendor/etc/vintf/manifest.xml \
     $(LOCAL_PATH)/recovery/root/system/bin/mcDriverDaemon:recovery/root/system/bin/mcDriverDaemon \
     $(LOCAL_PATH)/recovery/root/system/bin/android.hardware.keymaster@4.0-service.trustonic:recovery/root/system/bin/android.hardware.keymaster@4.0-service.trustonic \
     $(LOCAL_PATH)/recovery/root/system/bin/android.hardware.gatekeeper@1.0-service:recovery/root/system/bin/android.hardware.gatekeeper@1.0-service \
@@ -29,6 +30,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/root/vendor/lib64/libpuresoftkeymasterdevice.so:recovery/root/vendor/lib64/libpuresoftkeymasterdevice.so \
     $(LOCAL_PATH)/recovery/root/vendor/lib64/libsoft_attestation_cert.so:recovery/root/vendor/lib64/libsoft_attestation_cert.so \
     $(LOCAL_PATH)/recovery/root/vendor/lib64/hw/android.hardware.gatekeeper@1.0-impl.so:recovery/root/vendor/lib64/hw/android.hardware.gatekeeper@1.0-impl.so \
+    $(LOCAL_PATH)/recovery/root/vendor/lib64/hw/libMcGatekeeper.so:recovery/root/vendor/lib64/hw/gatekeeper.mt6853.so \
     $(LOCAL_PATH)/recovery/root/vendor/lib64/hw/libMcGatekeeper.so:recovery/root/vendor/lib64/hw/libMcGatekeeper.so
 
 PRODUCT_COPY_FILES += \
