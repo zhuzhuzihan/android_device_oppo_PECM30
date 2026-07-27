@@ -56,10 +56,12 @@ jobs:
 
       - name: Configure swap
         run: |
-          sudo fallocate -l 8G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
+          if [ -z "$(swapon --show=NAME --noheadings)" ]; then
+            sudo fallocate -l 8G /mnt/orangefox.swap
+            sudo chmod 600 /mnt/orangefox.swap
+            sudo mkswap /mnt/orangefox.swap
+            sudo swapon /mnt/orangefox.swap
+          fi
           free -h
 
       - name: Sync OrangeFox 12.1
