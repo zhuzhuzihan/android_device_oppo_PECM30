@@ -99,6 +99,10 @@ jobs:
           output="fox_${FOX_BRANCH}/out/target/product/${DEVICE}/recovery.img"
           test -f "${output}"
           recovery_root="fox_${FOX_BRANCH}/out/target/product/${DEVICE}/recovery/root"
+          test -x "${recovery_root}/system/bin/keystore2"
+          test -f "${recovery_root}/system/etc/init/keystore2.rc"
+          grep -Fq '/system/bin/keystore2' \
+            "${recovery_root}/system/etc/init/keystore2.rc"
           test -x "${recovery_root}/system/bin/postscreenunblank.sh"
           grep -Fq '/sys/class/graphics/fb0/blank' \
             "${recovery_root}/system/bin/postscreenunblank.sh"

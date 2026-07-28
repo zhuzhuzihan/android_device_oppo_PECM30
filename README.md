@@ -56,6 +56,12 @@ The stock recovery refers to `/dev/block/by-name/md_udc` as metadata while the
 vendor fstab and the device's actual mount table use
 `/dev/block/by-name/metadata`. The recovery fstab therefore uses the latter.
 
+FBE support uses OrangeFox's built-in Android 12.1 crypto stack. The tree sets
+`TW_INCLUDE_CRYPTO`, keeps the stock fscrypt v1 policy, and provides Keymaster
+4.0 only as a fallback through `OF_DEFAULT_KEYMASTER_VERSION`. OrangeFox may
+override that fallback after detecting the installed ROM's vendor manifest.
+No stock system crypto libraries or device-specific HAL binaries are bundled.
+
 ## GitHub Actions
 
 Run `Build OrangeFox` manually to receive a 30-day Actions artifact. Pushing a
