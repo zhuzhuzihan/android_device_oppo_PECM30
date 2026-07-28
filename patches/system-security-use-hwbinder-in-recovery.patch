@@ -1,25 +1,13 @@
 From: OrangeFox PECM30 device maintainers
-Subject: [PATCH] keystore2: fix recovery service integration
+Subject: [PATCH] keystore2: use binderized HIDL manager in recovery
 
 Recovery builds normally force generated HIDL getService() calls through the
 passthrough transport. PECM30 recovery runs a binderized hwservicemanager, so
-km_compat must obtain its context manager directly. Declare Keystore2's AIDL
-interface so init can restart the service on demand.
+km_compat must obtain its context manager directly.
 
 ---
- keystore2/keystore2.rc                | 1 +
  keystore2/src/km_compat/km_compat.cpp | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/keystore2/keystore2.rc b/keystore2/keystore2.rc
-index 0000000..0000000 100644
---- a/keystore2/keystore2.rc
-+++ b/keystore2/keystore2.rc
-@@ -11,3 +11,4 @@ service keystore2 /system/bin/keystore2 /data/misc/keystore
-     user keystore
-     group keystore readproc log
-     writepid /dev/cpuset/foreground/tasks
-+    interface aidl android.system.keystore2.IKeystoreService/default
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/keystore2/src/km_compat/km_compat.cpp b/keystore2/src/km_compat/km_compat.cpp
 index 0000000..0000000 100644

@@ -90,18 +90,6 @@ jobs:
           ! grep -Fq 'auto serviceManager = IServiceManager::getService();' "${source_file}"
           grep -Fq 'auto serviceManager = android::hardware::defaultServiceManager1_2();' "${source_file}"
 
-      - name: Allow Recovery Keystore2 services
-        run: |
-          patch_file="${GITHUB_WORKSPACE}/device-tree/patches/system-sepolicy-allow-recovery-keystore-services.patch"
-          git -C "fox_${FOX_BRANCH}/system/sepolicy" apply --check --unidiff-zero "${patch_file}"
-          git -C "fox_${FOX_BRANCH}/system/sepolicy" apply --unidiff-zero "${patch_file}"
-          contexts="fox_${FOX_BRANCH}/system/sepolicy/private/service_contexts"
-          test "$(grep -c 'u:object_r:recovery_keystore_service:s0' "${contexts}")" -eq 7
-          grep -Fq 'type recovery_keystore_service, service_manager_type;' \
-            "fox_${FOX_BRANCH}/system/sepolicy/private/recovery.te"
-          grep -Fq 'allow recovery recovery_keystore_service:service_manager { add find };' \
-            "fox_${FOX_BRANCH}/system/sepolicy/private/recovery.te"
-
       - name: Build recovery image
         working-directory: fox_12.1
         run: |
@@ -120,16 +108,7 @@ jobs:
           output="fox_${FOX_BRANCH}/out/target/product/${DEVICE}/recovery.img"
           test -f "${output}"
           recovery_root="fox_${FOX_BRANCH}/out/target/product/${DEVICE}/recovery/root"
-          service_contexts="${recovery_root}/system/etc/selinux/plat_service_contexts"
-          grep -F 'android.system.keystore2.IKeystoreService/default' "${service_contexts}" \
-            | grep -F 'u:object_r:recovery_keystore_service:s0'
-          grep -F 'android.security.legacykeystore' "${service_contexts}" \
-            | grep -F 'u:object_r:recovery_keystore_service:s0'
-          grep -F 'android.security.maintenance' "${service_contexts}" \
-            | grep -F 'u:object_r:recovery_keystore_service:s0'
-          grep -Fq 'interface aidl android.system.keystore2.IKeystoreService/default' \
-            "${recovery_root}/system/etc/init/keystore2.rc"
-          test -f "${recovery_root}/system/bin/postscreenunblank.sh"
+          test -x "${recovery_root}/system/bin/postscreenunblank.sh"
           grep -Fq '/sys/class/graphics/fb0/blank' \
             "${recovery_root}/system/bin/postscreenunblank.sh"
           mkdir -p artifacts
