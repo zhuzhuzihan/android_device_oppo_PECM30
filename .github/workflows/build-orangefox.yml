@@ -85,12 +85,17 @@ jobs:
         run: |
           recovery_patch="${GITHUB_WORKSPACE}/device-tree/patches/bootable-recovery-delay-keystore2.patch"
           security_patch="${GITHUB_WORKSPACE}/device-tree/patches/system-security-use-hwbinder-in-recovery.patch"
+          sepolicy_patch="${GITHUB_WORKSPACE}/device-tree/patches/system-sepolicy-allow-recovery-keystore-services.patch"
           git -C "fox_${FOX_BRANCH}/bootable/recovery" apply --check --unidiff-zero "${recovery_patch}"
           git -C "fox_${FOX_BRANCH}/bootable/recovery" apply --unidiff-zero "${recovery_patch}"
           git -C "fox_${FOX_BRANCH}/system/security" apply --check --unidiff-zero "${security_patch}"
           git -C "fox_${FOX_BRANCH}/system/security" apply --unidiff-zero "${security_patch}"
+          git -C "fox_${FOX_BRANCH}/system/sepolicy" apply --check --unidiff-zero "${sepolicy_patch}"
+          git -C "fox_${FOX_BRANCH}/system/sepolicy" apply --unidiff-zero "${sepolicy_patch}"
           grep -Fq 'android::hardware::defaultServiceManager1_2()' \
             "fox_${FOX_BRANCH}/system/security/keystore2/src/km_compat/km_compat.cpp"
+          contexts="fox_${FOX_BRANCH}/system/sepolicy/private/service_contexts"
+          test "$(grep -c 'u:object_r:recovery_keystore_service:s0' "${contexts}")" -eq 7
 
       - name: Build recovery image
         working-directory: fox_12.1
@@ -115,6 +120,9 @@ jobs:
           grep -Fq '/system/bin/keystore2' \
             "${recovery_root}/system/etc/init/keystore2.rc"
           grep -Fq 'disabled' "${recovery_root}/system/etc/init/keystore2.rc"
+          service_contexts="${recovery_root}/system/etc/selinux/plat_service_contexts"
+          grep -Fq 'android.system.keystore2.IKeystoreService/default' "${service_contexts}"
+          test "$(grep -c 'u:object_r:recovery_keystore_service:s0' "${service_contexts}")" -eq 7
           test -x "${recovery_root}/system/bin/postscreenunblank.sh"
           grep -Fq '/sys/class/graphics/fb0/blank' \
             "${recovery_root}/system/bin/postscreenunblank.sh"
