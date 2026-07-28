@@ -56,10 +56,6 @@ The stock recovery refers to `/dev/block/by-name/md_udc` as metadata while the
 vendor fstab and the device's actual mount table use
 `/dev/block/by-name/metadata`. The recovery fstab therefore uses the latter.
 
-Android 11 FBE decryption uses the stock Trustonic Keymaster 4.0, hardware
-Gatekeeper and `mcDriverDaemon` blobs. These run with the stock vendor library
-set ahead of the OrangeFox Android 12 libraries to avoid ABI collisions.
-
 ## GitHub Actions
 
 Run `Build OrangeFox` manually to receive a 30-day Actions artifact. Pushing a

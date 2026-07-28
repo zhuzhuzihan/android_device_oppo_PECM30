@@ -6,5 +6,3 @@
 /dev/usb-ffs/fastboot/*     0660 system system
 /dev/mtk_disp_mgr           0660 system graphics
 /dev/ion                    0666 system system
-/dev/mobicore               0666 root root
-/dev/mobicore-user          0666 root root

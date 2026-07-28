@@ -3,40 +3,6 @@ on init
     setprop sys.usb.ffs.aio_compat 1
     setprop sys.usb.config adb
 
-    mkdir /mnt/vendor 0755 root root
-    mkdir /mnt/vendor/persist 0771 root root
-
 on fs
-    mount ext4 /dev/block/by-name/persist /mnt/vendor/persist noatime nosuid nodev
-    mkdir /mnt/vendor/persist/mcRegistry 0771 root root
     write /sys/class/udc/musb-hdrc/device/cmode 2
     start adbd
-
-on property:hwservicemanager.ready=true
-    start mobicore
-    start keymaster-4-0
-    start gatekeeper-1-0
-
-service mobicore /system/bin/mcDriverDaemon --P1 /mnt/vendor/persist/mcRegistry
-    class core
-    user root
-    group root
-    disabled
-    seclabel u:r:recovery:s0
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/system/lib64
-
-service keymaster-4-0 /system/bin/android.hardware.keymaster@4.0-service.trustonic
-    class early_hal
-    user root
-    group root drmrpc
-    disabled
-    seclabel u:r:recovery:s0
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/system/lib64
-
-service gatekeeper-1-0 /system/bin/android.hardware.gatekeeper@1.0-service
-    class hal
-    user root
-    group root
-    disabled
-    seclabel u:r:recovery:s0
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib64/hw:/system/lib64
