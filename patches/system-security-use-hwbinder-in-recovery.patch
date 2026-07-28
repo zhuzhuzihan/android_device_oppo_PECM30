@@ -1,0 +1,16 @@
+From: OrangeFox PECM30 device maintainers
+Subject: [PATCH] keystore2: use binderized HIDL manager in recovery
+
+Recovery builds normally force generated HIDL getService() calls through the
+passthrough transport. PECM30 recovery runs a binderized hwservicemanager, so
+the built-in KeyMint compatibility layer must obtain that manager directly.
+
+diff --git a/keystore2/src/km_compat/km_compat.cpp b/keystore2/src/km_compat/km_compat.cpp
+index 2823c24..bc4aad7 100644
+--- a/keystore2/src/km_compat/km_compat.cpp
++++ b/keystore2/src/km_compat/km_compat.cpp
+@@ -27,0 +28 @@
++#include <hidl/ServiceManagement.h>
+@@ -1314 +1315 @@ KeymasterDevices initializeKeymasters() {
+-    auto serviceManager = IServiceManager::getService();
++    auto serviceManager = android::hardware::defaultServiceManager1_2();

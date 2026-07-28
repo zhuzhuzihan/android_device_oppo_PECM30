@@ -61,6 +61,8 @@ FBE support uses OrangeFox's built-in Android 12.1 crypto stack. The tree sets
 4.0 only as a fallback through `OF_DEFAULT_KEYMASTER_VERSION`. OrangeFox may
 override that fallback after detecting the installed ROM's vendor manifest.
 No stock system crypto libraries or device-specific HAL binaries are bundled.
+The stock vendor partition remains mounted during initial decryption so its
+hardware Keymaster and Gatekeeper services can run directly from the device.
 
 ## GitHub Actions
 
