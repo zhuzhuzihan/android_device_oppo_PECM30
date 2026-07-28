@@ -14,7 +14,7 @@ diff --git a/Android.bp b/Android.bp
 index 1b85a64..8c08288 100644
 --- a/Android.bp
 +++ b/Android.bp
-@@ -594,4 +594,5 @@ service_contexts {
+@@ -594,3 +594,4 @@ service_contexts {
      name: "plat_service_contexts",
      srcs: [":service_contexts_files"],
 +    recovery_available: true,

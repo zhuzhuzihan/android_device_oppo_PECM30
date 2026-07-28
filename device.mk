@@ -19,6 +19,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/root/ueventd.mt6853.rc:recovery/root/ueventd.mt6853.rc \
     $(LOCAL_PATH)/recovery/root/system/etc/recovery.fstab:recovery/root/system/etc/recovery.fstab \
     $(LOCAL_PATH)/recovery/root/system/etc/twrp.flags:recovery/root/system/etc/twrp.flags \
+    $(LOCAL_PATH)/recovery/root/system/bin/postscreenunblank.sh:recovery/root/system/bin/postscreenunblank.sh \
     $(LOCAL_PATH)/recovery/root/vendor/etc/vintf/manifest.xml:recovery/root/vendor/etc/vintf/manifest.xml \
     $(LOCAL_PATH)/recovery/root/system/bin/mcDriverDaemon:recovery/root/system/bin/mcDriverDaemon \
     $(LOCAL_PATH)/recovery/root/system/bin/android.hardware.keymaster@4.0-service.trustonic:recovery/root/system/bin/android.hardware.keymaster@4.0-service.trustonic \

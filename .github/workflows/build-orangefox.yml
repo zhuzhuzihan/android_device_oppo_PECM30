@@ -122,6 +122,9 @@ jobs:
           grep -Fq 'android.security.maintenance' "${service_contexts}"
           grep -Fq 'interface aidl android.system.keystore2.IKeystoreService/default' \
             "${recovery_root}/system/etc/init/keystore2.rc"
+          test -x "${recovery_root}/system/bin/postscreenunblank.sh"
+          grep -Fq '/sys/class/graphics/fb0/blank' \
+            "${recovery_root}/system/bin/postscreenunblank.sh"
           mkdir -p artifacts
           image="artifacts/OrangeFox-${DEVICE}-${GITHUB_REF_NAME}.img"
           cp "${output}" "${image}"
