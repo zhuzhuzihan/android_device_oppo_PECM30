@@ -91,7 +91,11 @@ TW_INCLUDE_REPACKTOOLS := true
 TW_INCLUDE_RESETPROP := true
 TW_INCLUDE_LIBRESETPROP := true
 TW_INCLUDE_CRYPTO := true
+TW_INCLUDE_CRYPTO_FBE := true
 TW_USE_FSCRYPT_POLICY := 1
+# This tree loads the stock vendor HAL services (keymaster-4-0, gatekeeper-1-0,
+# mobicore) directly via init.recovery.mt6853.rc; TW_USES_VENDOR_LIBS keeps the
+# shared library and HAL loader paths resolvable for that path.
 TW_USES_VENDOR_LIBS := true
 TW_PREPARE_DATA_MEDIA_EARLY := true
 RECOVERY_SDCARD_ON_DATA := true
