@@ -16,6 +16,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilt/dtb:dtb.img \
     $(LOCAL_PATH)/recovery/root/init.recovery.mt6853.rc:recovery/root/init.recovery.mt6853.rc \
     $(LOCAL_PATH)/recovery/root/ueventd.mt6853.rc:recovery/root/ueventd.mt6853.rc \
+    $(LOCAL_PATH)/recovery/root/default.prop:recovery/root/default.prop \
     $(LOCAL_PATH)/recovery/root/system/etc/recovery.fstab:recovery/root/system/etc/recovery.fstab \
     $(LOCAL_PATH)/recovery/root/system/etc/twrp.flags:recovery/root/system/etc/twrp.flags \
     $(LOCAL_PATH)/recovery/root/system/bin/postscreenunblank.sh:recovery/root/system/bin/postscreenunblank.sh

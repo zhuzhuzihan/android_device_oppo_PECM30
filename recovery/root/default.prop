@@ -1,0 +1,14 @@
+# Minimal property overlay for the OrangeFox 12.1 recovery ramdisk. init reads
+# this before parsing /system/etc/init/hw/init.rc, so the values are visible to
+# the "import /init.${ro.hardware}.rc" / "import /init.recovery.${ro.hardware}.rc"
+# directives that load device-tree init scripts.
+#
+# device.mk PRODUCT_PROPERTY_OVERRIDES targets /system/build.prop only and is
+# NOT visible in recovery; without this file, the imports above resolve to a
+# missing path and our init.recovery.mt6853.rc is never parsed, leaving the
+# vendor HAL services unregistered. The downstream effect is keystore2 starts
+# but immediately SIGSEGVs because no keymaster/gatekeeper are reachable.
+ro.hardware=mt6853
+ro.hardware.platform=mt6853
+ro.product.board=oppo6853
+ro.board.platform=mt6853
