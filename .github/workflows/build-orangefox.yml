@@ -81,6 +81,13 @@ jobs:
           mkdir -p "fox_${FOX_BRANCH}/device/oppo"
           rsync -a --exclude=.git device-tree/ "fox_${FOX_BRANCH}/${DEVICE_PATH}/"
 
+      - name: Delay built-in Keystore2 startup
+        run: |
+          recovery_patch="${GITHUB_WORKSPACE}/device-tree/patches/bootable-recovery-delay-keystore2.patch"
+          git -C "fox_${FOX_BRANCH}/bootable/recovery" apply --check --unidiff-zero "${recovery_patch}"
+          git -C "fox_${FOX_BRANCH}/bootable/recovery" apply --unidiff-zero "${recovery_patch}"
+          grep -Fq 'disabled' "fox_${FOX_BRANCH}/bootable/recovery/etc/init/keystore2.rc"
+
       - name: Build recovery image
         working-directory: fox_12.1
         run: |
