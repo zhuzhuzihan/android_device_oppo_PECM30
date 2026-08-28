@@ -56,18 +56,11 @@ The stock recovery refers to `/dev/block/by-name/md_udc` as metadata while the
 vendor fstab and the device's actual mount table use
 `/dev/block/by-name/metadata`. The recovery fstab therefore uses the latter.
 
-FBE support uses OrangeFox's built-in Android 12.1 crypto stack. The tree sets
-`TW_INCLUDE_CRYPTO` and `TW_INCLUDE_CRYPTO_FBE` (the latter is the FBE-specific
-code-path switch used by the OrangeFox 12.1 reference tree), keeps the stock
-fscrypt v1 policy, and loads the stock vendor HAL services directly: the
-`keymaster-4-0`, `gatekeeper-1-0` and `mobicore` services are started from
-`recovery/root/init.recovery.mt6853.rc` once `/vendor` is mounted. No stock
-system crypto libraries or device-specific HAL binaries are bundled. The stock
-vendor partition remains mounted during initial decryption so its hardware
-Keymaster and Gatekeeper services can run directly from the device.
-`OF_DEFAULT_KEYMASTER_VERSION=4.0` (set in `vendorsetup.sh`) is the fallback
-OrangeFox uses if it cannot detect the installed ROM's vendor manifest on its
-own.
+FBE decryption is intentionally skipped. `vendorsetup.sh` exports
+`OF_SKIP_FBE_DECRYPTION=1`, the official OrangeFox 12.1 build variable for
+skipping the FBE decryption routines on devices where they cause a boot hang.
+The tree still keeps the stock fscrypt v1 policy and the vendor HAL definitions
+needed by the recovery image, but OrangeFox does not attempt to unlock `/data`.
 
 ## GitHub Actions
 
